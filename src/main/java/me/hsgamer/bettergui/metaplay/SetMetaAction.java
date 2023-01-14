@@ -38,6 +38,7 @@ public class SetMetaAction implements Action {
         Bukkit.getScheduler().runTask(addon.getPlugin(), () -> {
             String previousValue = addon.getMetadataValue(player, name).map(MetadataValue::asString).orElse(isNumber ? "0" : "");
             String finalValue = value.replace("{value}", previousValue);
+            finalValue = StringReplacerApplier.replace(finalValue, uuid, this);
             addon.setMetadataValue(player, name, finalValue);
             process.next();
         });
