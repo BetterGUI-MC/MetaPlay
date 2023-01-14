@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 
+import java.util.Locale;
 import java.util.Optional;
 
 public final class MetaPlay extends PluginAddon {
@@ -18,7 +19,26 @@ public final class MetaPlay extends PluginAddon {
             if (player == null) {
                 return null;
             }
-            return getMetadataValue(player, original).map(MetadataValue::asString).orElse("");
+            boolean isNumber = original.toLowerCase(Locale.ROOT).startsWith("number_");
+            String name;
+            if (isNumber) {
+                name = original.substring(7);
+            } else {
+                name = original;
+            }
+            Optional<MetadataValue> optional = player.getMetadata(name).stream().findFirst();
+            if (optional.isPresent()) {
+                MetadataValue metadataValue = optional.get();
+                if (isNumber) {
+                    try {
+                        return Integer.toString(metadataValue.asInt());
+                    } catch (Exception ignored) {
+                        return "-1";
+                    }
+                }
+                return metadataValue.asString();
+            }
+            return isNumber ? "0" : "";
         });
         ActionBuilder.INSTANCE.register(input -> new SetMetaAction(this, input), "set-meta", "meta", "set-meta-number", "meta-number");
     }
