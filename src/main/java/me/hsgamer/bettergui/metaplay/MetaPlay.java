@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 
+import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -31,7 +32,10 @@ public final class MetaPlay extends PluginAddon {
                 MetadataValue metadataValue = optional.get();
                 if (isNumber) {
                     try {
-                        return Integer.toString(metadataValue.asInt());
+                        double value = metadataValue.asDouble();
+                        NumberFormat numberFormat = NumberFormat.getInstance(Locale.ROOT);
+                        numberFormat.setMinimumFractionDigits(0);
+                        return numberFormat.format(value);
                     } catch (Exception ignored) {
                         return "-1";
                     }
