@@ -24,8 +24,8 @@ public class SetMetaAction implements Action {
         this.menu = input.menu;
         this.value = input.value;
         List<String> optionList = input.getOptionAsList();
-        this.name = optionList.size() > 1 ? optionList.get(1) : "";
-        this.isNumber = optionList.size() > 2 && optionList.get(2).equalsIgnoreCase("number");
+        this.name = !optionList.isEmpty() ? optionList.get(0) : "";
+        this.isNumber = optionList.size() > 1 && optionList.get(1).equalsIgnoreCase("number");
     }
 
     @Override
