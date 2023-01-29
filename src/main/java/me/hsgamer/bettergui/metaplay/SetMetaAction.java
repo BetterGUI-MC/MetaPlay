@@ -9,19 +9,23 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
 
+import java.util.List;
 import java.util.UUID;
 
 public class SetMetaAction implements Action {
     private final MetaPlay addon;
     private final Menu menu;
-    private final String actionValue;
+    private final String value;
+    private final String name;
     private final boolean isNumber;
 
     public SetMetaAction(MetaPlay addon, ActionBuilder.Input input) {
         this.addon = addon;
         this.menu = input.menu;
-        this.actionValue = input.value;
-        this.isNumber = input.option.equalsIgnoreCase("number");
+        this.value = input.value;
+        List<String> optionList = input.getOptionAsList();
+        this.name = optionList.size() > 1 ? optionList.get(1) : "";
+        this.isNumber = optionList.size() > 2 && optionList.get(2).equalsIgnoreCase("number");
     }
 
     @Override
@@ -31,9 +35,6 @@ public class SetMetaAction implements Action {
             process.next();
             return;
         }
-        String[] split = actionValue.split(" ", 2);
-        String name = StringReplacerApplier.replace(split[0], uuid, this);
-        String value = split.length > 1 ? split[1] : "";
         Bukkit.getScheduler().runTask(addon.getPlugin(), () -> {
             String previousValue = addon.getMetadataValue(player, name).map(MetadataValue::asString).orElse(isNumber ? "0" : "");
             String finalValue = value.replace("{value}", previousValue);
