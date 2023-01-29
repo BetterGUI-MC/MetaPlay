@@ -4,12 +4,11 @@ import me.hsgamer.bettergui.api.action.Action;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.builder.ActionBuilder;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
-import me.hsgamer.hscore.task.BatchRunnable;
+import me.hsgamer.hscore.task.element.TaskProcess;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
 
-import java.util.Locale;
 import java.util.UUID;
 
 public class SetMetaAction implements Action {
@@ -22,11 +21,11 @@ public class SetMetaAction implements Action {
         this.addon = addon;
         this.menu = input.menu;
         this.actionValue = input.value;
-        this.isNumber = input.type.toLowerCase(Locale.ROOT).contains("number");
+        this.isNumber = input.option.equalsIgnoreCase("number");
     }
 
     @Override
-    public void accept(UUID uuid, BatchRunnable.Process process) {
+    public void accept(UUID uuid, TaskProcess process) {
         Player player = Bukkit.getPlayer(uuid);
         if (player == null) {
             process.next();

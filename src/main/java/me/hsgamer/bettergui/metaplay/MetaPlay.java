@@ -44,7 +44,7 @@ public final class MetaPlay extends PluginAddon {
             }
             return isNumber ? "0" : "";
         });
-        ActionBuilder.INSTANCE.register(input -> new SetMetaAction(this, input), "set-meta", "meta", "set-meta-number", "meta-number");
+        ActionBuilder.INSTANCE.register(input -> new SetMetaAction(this, input), "set-meta", "meta");
     }
 
     Optional<MetadataValue> getMetadataValue(Player player, String name) {
