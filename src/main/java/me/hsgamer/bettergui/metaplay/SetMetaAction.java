@@ -4,6 +4,7 @@ import me.hsgamer.bettergui.api.action.Action;
 import me.hsgamer.bettergui.api.menu.Menu;
 import me.hsgamer.bettergui.builder.ActionBuilder;
 import me.hsgamer.bettergui.util.StringReplacerApplier;
+import me.hsgamer.hscore.bukkit.scheduler.Scheduler;
 import me.hsgamer.hscore.task.element.TaskProcess;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -35,13 +36,12 @@ public class SetMetaAction implements Action {
             process.next();
             return;
         }
-        Bukkit.getScheduler().runTask(addon.getPlugin(), () -> {
+        Scheduler.CURRENT.runEntityTaskWithFinalizer(addon.getPlugin(), player, () -> {
             String previousValue = addon.getMetadataValue(player, name).map(MetadataValue::asString).orElse(isNumber ? "0" : "");
             String finalValue = value.replace("{value}", previousValue);
             finalValue = StringReplacerApplier.replace(finalValue, uuid, this);
             addon.setMetadataValue(player, name, finalValue);
-            process.next();
-        });
+        }, process::next, false);
     }
 
     @Override
