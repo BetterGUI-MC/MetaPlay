@@ -1,8 +1,10 @@
 package me.hsgamer.bettergui.metaplay;
 
+import me.hsgamer.bettergui.api.addon.GetPlugin;
 import me.hsgamer.bettergui.builder.ActionBuilder;
-import me.hsgamer.hscore.bukkit.addon.PluginAddon;
-import me.hsgamer.hscore.variable.VariableManager;
+import me.hsgamer.hscore.common.StringReplacer;
+import me.hsgamer.hscore.expansion.common.Expansion;
+import me.hsgamer.hscore.variable.VariableBundle;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -12,10 +14,12 @@ import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.Optional;
 
-public final class MetaPlay extends PluginAddon {
+public final class MetaPlay implements Expansion, GetPlugin {
+    private final VariableBundle variableBundle = new VariableBundle();
+
     @Override
     public void onEnable() {
-        VariableManager.register("meta_", (original, uuid) -> {
+        variableBundle.register("meta_", StringReplacer.of((original, uuid) -> {
             Player player = Bukkit.getPlayer(uuid);
             if (player == null) {
                 return null;
@@ -43,8 +47,13 @@ public final class MetaPlay extends PluginAddon {
                 return metadataValue.asString();
             }
             return isNumber ? "0" : "";
-        });
+        }));
         ActionBuilder.INSTANCE.register(input -> new SetMetaAction(this, input), "set-meta", "meta");
+    }
+
+    @Override
+    public void onDisable() {
+        variableBundle.unregisterAll();
     }
 
     Optional<MetadataValue> getMetadataValue(Player player, String name) {

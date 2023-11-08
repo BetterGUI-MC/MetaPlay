@@ -36,12 +36,12 @@ public class SetMetaAction implements Action {
             process.next();
             return;
         }
-        Scheduler.CURRENT.runEntityTaskWithFinalizer(addon.getPlugin(), player, () -> {
+        Scheduler.current().sync().runEntityTaskWithFinalizer(player, () -> {
             String previousValue = addon.getMetadataValue(player, name).map(MetadataValue::asString).orElse(isNumber ? "0" : "");
             String finalValue = value.replace("{value}", previousValue);
             finalValue = StringReplacerApplier.replace(finalValue, uuid, this);
             addon.setMetadataValue(player, name, finalValue);
-        }, process::next, false);
+        }, process::next);
     }
 
     @Override
